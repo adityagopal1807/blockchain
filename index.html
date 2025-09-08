@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AyurChain | Herbal Blockchain Traceability</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f5f5f5; color: #333; line-height: 1.6; }
+
+    /* Navbar */
+    nav {
+      position: fixed; width: 100%; top: 0; left: 0; z-index: 1000;
+      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    nav .logo { color: #fff; font-size: 1.8rem; font-weight: bold; letter-spacing: 1px; }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul li a { color: #fff; text-decoration: none; font-size: 1rem; transition: color 0.3s; }
+    nav ul li a:hover, nav ul li a.active { color: #ff4d4d; }
+    .menu-toggle { display: none; font-size: 1.8rem; color: #fff; cursor: pointer; }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; flex-direction: column; background: rgba(0,0,0,0.95); position: absolute; top: 60px; right: 0; width: 200px; padding: 1rem; border-radius: 8px; }
+      nav ul.show { display: flex; }
+      .menu-toggle { display: block; }
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(to right, rgba(255,0,0,0.6), rgba(0,0,0,0.7)), url('https://img.freepik.com/free-photo/herbal-medicine-leaves-mortar-with-pills_1150-11214.jpg') center/cover no-repeat;
+      color: #fff; text-align: center; padding: 160px 20px 100px;
+    }
+    .hero h1 { font-size: 3rem; font-weight: 700; letter-spacing: 1px; }
+    .hero h3 { font-size: 1.4rem; margin-top: 10px; font-weight: 400; }
+    .hero p { font-size: 1.1rem; margin: 20px auto; max-width: 650px; line-height: 1.5; }
+
+    .btn {
+      background: linear-gradient(135deg, #ff0000, #cc0000); color: #fff;
+      padding: 12px 28px; border: none; border-radius: 8px;
+      font-weight: bold; margin: 10px; font-size: 16px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer; text-decoration: none; display: inline-block;
+    }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4); }
+
+    /* Sections */
+    .section { padding: 60px 20px; text-align: center; background: #fff; }
+    .section:nth-child(even) { background-color: #f0f0f0; }
+    .section h2 { font-size: 2.2rem; margin-bottom: 20px; color: #cc0000; }
+
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px; margin-top: 30px; padding: 0 10px;
+    }
+    .card {
+      background: #fff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px; transition: all 0.6s ease; opacity: 0; transform: translateY(20px);
+    }
+    .card.show { opacity: 1; transform: translateY(0); }
+    .card i { font-size: 2.5rem; color: #cc0000; margin-bottom: 10px; }
+
+    /* Footer */
+    .footer { background: #222; color: #fff; text-align: center; padding: 20px 10px; margin-top: 60px; }
+
+    /* Scroll-to-top */
+    .top-button {
+      position: fixed; bottom: 30px; right: 30px;
+      background: #cc0000; color: #fff;
+      padding: 12px; border-radius: 50%; font-size: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center;
+      z-index: 1000; display: none; cursor: pointer;
+    }
+    .top-button.show { display: inline-block; }
+
+    /* Chat Button */
+    .chat-btn {
+      position: fixed; bottom: 90px; right: 30px;
+      background: #ff0000; color: #fff;
+      padding: 16px; border-radius: 50%; font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer; z-index: 1000;
+    }
+
+    /* Chat Box */
+    .chat-box {
+      position: fixed; bottom: 160px; right: 30px;
+      width: 320px; height: 400px;
+      background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: none; flex-direction: column; z-index: 1000;
+    }
+    .chat-header {
+      background: #cc0000; color: #fff; padding: 12px; border-radius: 12px 12px 0 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .chat-messages {
+      flex: 1; padding: 10px; overflow-y: auto; font-size: 0.9rem;
+    }
+    .chat-input {
+      display: flex; padding: 10px; border-top: 1px solid #ddd;
+    }
+    .chat-input input {
+      flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .chat-input button {
+      margin-left: 8px; background: #cc0000; color: #fff; border: none;
+      padding: 8px 12px; border-radius: 6px; cursor: pointer;
+    }
+    .message { margin: 5px 0; }
+    .user { text-align: right; color: #cc0000; }
+    .bot { text-align: left; color: #333; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">AyurChain</div>
+    <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <ul id="menu">
+      <li><a class="active" href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="home">
+    <h1>Blockchain for Ayurvedic Herb Traceability</h1>
+    <h3>Trust · Transparency · Sustainability</h3>
+    <p>From farm to pharmacy—track every step of an herb’s journey with blockchain, geo-tagging, and smart labeling.</p>
+    <a href="#features" class="btn">Explore Features</a>
+    <a href="#contact" class="btn">Contact Us</a>
+  </header>
+
+  <section class="section" id="features">
+    <h2>Core Features</h2>
+    <div class="features">
+      <div class="card"><i class="fas fa-leaf"></i><h3>Geo-Tagged Harvest</h3><p>Every herb collection is GPS-verified with farmer/collector identity.</p></div>
+      <div class="card"><i class="fas fa-flask"></i><h3>Quality Assurance</h3><p>Lab results (DNA, pesticide, moisture) stored on blockchain.</p></div>
+      <div class="card"><i class="fas fa-cubes"></i><h3>Blockchain Ledger</h3><p>Immutable, secure records of every step in the supply chain.</p></div>
+      <div class="card"><i class="fas fa-qrcode"></i><h3>Smart QR Codes</h3><p>Consumers scan to see full provenance and sustainability details.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <h2>How It Works</h2>
+    <div class="features">
+      <div class="card"><i class="fas fa-seedling"></i><h3>Step 1: Collection</h3><p>Farmers collect herbs with GPS-tagged proof of origin.</p></div>
+      <div class="card"><i class="fas fa-industry"></i><h3>Step 2: Processing</h3><p>Drying, grinding, and packaging events recorded securely.</p></div>
+      <div class="card"><i class="fas fa-vials"></i><h3>Step 3: Testing</h3><p>Labs verify authenticity and quality, results stored immutably.</p></div>
+      <div class="card"><i class="fas fa-box-open"></i><h3>Step 4: Consumer Scan</h3><p>Customers scan QR codes to see the complete story.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: <a href="mailto:ayurchain@support.com">ayurchain@support.com</a></p>
+    <p>Organization: Ministry of Ayush | AIIA</p>
+  </section>
+
+  <footer class="footer"><p>&copy; 2025 AyurChain. All rights reserved.</p></footer>
+
+  <a href="#" class="top-button"><i class="fas fa-arrow-up"></i></a>
+
+  <!-- Chat Button -->
+  <div class="chat-btn" onclick="toggleChat()"><i class="fas fa-comments"></i></div>
+
+  <!-- Chat Box -->
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <span>AyurChain Support</span>
+      <i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">👋 Hello! How can we help you?</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle mobile menu
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.classList.toggle("show");
+    }
+
+    // Scroll-to-top
+    const topButton = document.querySelector('.top-button');
+    window.addEventListener('scroll', () => {
+      topButton.classList.toggle('show', window.scrollY > 400);
+    });
+
+    // Card animation
+    const cards = document.querySelectorAll('.card');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => entry.target.classList.toggle('show', entry.isIntersecting));
+    }, { threshold: 0.4 });
+    cards.forEach(card => observer.observe(card));
+
+    // Chat functions
+    function toggleChat() {
+      const chat = document.getElementById("chatBox");
+      chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
+    }
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const msg = input.value.trim();
+      if (!msg) return;
+      const messages = document.getElementById("chatMessages");
+      messages.innerHTML += `<div class="message user">${msg}</div>`;
+      input.value = "";
+      // Simple bot reply
+      setTimeout(() => {
+        messages.innerHTML += `<div class="message bot">Thanks for your message! Our team will respond soon.</div>`;
+        messages.scrollTop = messages.scrollHeight;
+      }, 1000);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
+</body>
+</html>
