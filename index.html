@@ -40,14 +40,23 @@
     position: relative;
     color: #00ffff; text-align: center;
     padding: 180px 20px 120px;
-    background: radial-gradient(circle at center, #0f0f1a 0%, #000000 100%);
     overflow: hidden;
+  }
+  #particles-canvas {
+    position: absolute;
+    top:0; left:0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
   }
   .hero h1 { font-size: 3rem; font-weight: 700; letter-spacing: 1px; color: #00ffff; }
   .hero h3 { font-size: 1.5rem; margin-top: 10px; font-weight: 400; color: #00ffff; }
   .hero p { font-size: 1.2rem; margin: 20px auto; max-width: 650px; line-height: 1.5; color: #ccc; }
-  .hero .btn { background: linear-gradient(135deg, #00ffff, #0055ff); color: #fff; padding: 12px 28px; border: none; border-radius: 8px; font-weight: bold; margin: 10px; font-size: 16px; cursor: pointer; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s; }
-  .hero .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,255,255,0.5); }
+  .hero .btn { background: linear-gradient(135deg, #00ffff, #0055ff); color: #fff; padding: 12px 28px; border: none; border-radius: 12px; font-weight: bold; margin: 10px; font-size: 16px; cursor: pointer; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s; }
+  .hero .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,255,255,0.4); }
 
   /* Sections */
   .section { padding: 60px 20px; text-align: center; }
@@ -59,12 +68,15 @@
     gap: 20px; margin-top: 30px; padding: 0 10px;
   }
   .card {
-    background: #1a1a2e; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    background: #111126; border-radius: 16px;
     padding: 20px; transition: all 0.6s ease;
     opacity: 0; transform: translateY(20px);
+    box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    border: 1px solid rgba(0,255,255,0.2);
   }
   .card.show { opacity: 1; transform: translateY(0); }
-  .card i { font-size: 2.5rem; color: #00ffff; margin-bottom: 10px; }
+  .card i { font-size: 2.5rem; color: #00ffff; margin-bottom: 10px; transition: 0.3s; }
+  .card:hover { box-shadow: 0 0 30px rgba(0,255,255,0.4); transform: translateY(-5px); }
 
   /* Footer */
   .footer { background: #111126; color: #00ffff; text-align: center; padding: 20px 10px; margin-top: 60px; }
@@ -89,18 +101,11 @@
     display: none; flex-direction: column;
     overflow: hidden; z-index: 1000;
   }
-  .chat-header {
-    background: #00ffff; color: black; text-align: center;
-    padding: 10px; font-size: 16px; font-weight: bold;
-  }
-  .chat-box {
-    flex: 1; padding: 12px; overflow-y: auto;
-    background: #0f0f1a;
-  }
+  .chat-header { background: #00ffff; color: black; text-align: center; padding: 10px; font-size: 16px; font-weight: bold; }
+  .chat-box { flex: 1; padding: 12px; overflow-y: auto; background: #0f0f1a; }
   .message { margin: 8px 0; padding: 8px 12px; border-radius: 10px; max-width: 75%; }
   .user-message { background: #00ffff; color: black; align-self: flex-end; }
   .bot-message { background: #222233; color: #00ffff; align-self: flex-start; }
-
   .chat-input { display: flex; border-top: 1px solid #00ffff; }
   .chat-input input { flex: 1; padding: 10px; border: none; outline: none; font-size: 14px; background: #111126; color: #fff; }
   .chat-input button { background: #00ffff; color: black; border: none; padding: 0 15px; cursor: pointer; }
@@ -130,12 +135,15 @@
 </nav>
 
 <header class="hero">
-  <h1>AI-Powered Blockchain Herbal Trace</h1>
-  <h3>Transparent, Secure, and Rewarding Supply Chain</h3>
-  <p>Trace every step of herbal products from farm to consumer using blockchain. Earn rewards for verified purchases and sustainable actions.</p>
-  <div style="margin-top: 20px;">
-    <a href="register.html" class="btn">Register</a>
-    <a href="login.html" class="btn">Login</a>
+  <canvas id="particles-canvas"></canvas>
+  <div class="hero-content">
+    <h1>AI-Powered Blockchain Herbal Trace</h1>
+    <h3>Transparent, Secure, and Rewarding Supply Chain</h3>
+    <p>Trace every step of herbal products from farm to consumer using blockchain. Earn rewards for verified purchases and sustainable actions.</p>
+    <div style="margin-top: 20px;">
+      <a href="register.html" class="btn">Register</a>
+      <a href="login.html" class="btn">Login</a>
+    </div>
   </div>
 </header>
 
@@ -181,54 +189,90 @@
 <footer class="footer"><p>&copy; 2025 HerbalTrace AI. All rights reserved.</p></footer>
 
 <script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-function updateCartCount() { if(document.getElementById("cart-count")) document.getElementById("cart-count").innerText = cart.length; }
-updateCartCount();
+/* Navbar menu toggle */
 function toggleMenu() { document.getElementById("menu").classList.toggle("show"); }
 
+/* Cards animation */
 const cards = document.querySelectorAll('.card');
 const observer = new IntersectionObserver(entries => { entries.forEach(entry => entry.target.classList.toggle('show', entry.isIntersecting)); }, { threshold: 0.4 });
 cards.forEach(card => observer.observe(card));
 
-function toggleChat() {
-  const chatContainer = document.getElementById("chat-container");
-  chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
+/* Chat functionality */
+function toggleChat() { const c = document.getElementById("chat-container"); c.style.display = c.style.display==="flex"?"none":"flex"; }
+const faq = { "hello":"Hello 👋! Welcome to HerbalTrace AI.", "hi":"Hi! 😊 Ask me about tracking, rewards, or sustainable sourcing.", "how are you":"I'm doing great! Ready to guide you through the platform.", "trace":"Blockchain traceability allows you to verify herbs from farm to shelf.", "reward":"Earn points for verified purchases and sustainable actions.", "register":"Click the Register button to create your account.", "login":"Click the Login button to access your account." };
+function sendMessage(){
+  const inputField=document.getElementById("user-input"); const message=inputField.value.trim().toLowerCase(); if(!message) return;
+  appendMessage(inputField.value,"user"); inputField.value="";
+  let reply="🤖 Sorry, I didn’t understand that. Try asking about traceability, rewards, or registration.";
+  for(let key in faq){ if(message.includes(key)){ reply=faq[key]; break; } }
+  setTimeout(()=>appendMessage(reply,"bot"),500);
+}
+function appendMessage(text,sender){ const chatBox=document.getElementById("chat-box"); const msgDiv=document.createElement("div"); msgDiv.classList.add("message",sender==="user"?"user-message":"bot-message"); msgDiv.innerText=text; chatBox.appendChild(msgDiv); chatBox.scrollTop=chatBox.scrollHeight; }
+document.getElementById("user-input").addEventListener("keypress",function(e){if(e.key==="Enter")sendMessage();});
+
+/* Particle animation */
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particlesArray = [];
+const colors = ['rgba(0,255,255,0.5)','rgba(0,200,255,0.4)','rgba(0,255,200,0.3)'];
+const maxDistance = 150;
+
+class Particle {
+  constructor(){
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height;
+    this.size = Math.random()*3+1;
+    this.speedX = (Math.random()-0.5)*1;
+    this.speedY = (Math.random()-0.5)*1;
+    this.color = colors[Math.floor(Math.random()*colors.length)];
+  }
+  update(){
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x<0||this.x>canvas.width) this.speedX*=-1;
+    if(this.y<0||this.y>canvas.height) this.speedY*=-1;
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.fill();
+  }
 }
 
-const faq = {
-  "hello": "Hello 👋! Welcome to HerbalTrace AI. How can I help you?",
-  "hi": "Hi! 😊 Ask me about tracking, rewards, or sustainable sourcing.",
-  "how are you": "I'm doing great! Ready to guide you through the platform.",
-  "trace": "Blockchain traceability allows you to verify herbs from farm to shelf.",
-  "reward": "Earn points for verified purchases and sustainable actions.",
-  "register": "Click the Register button on top to create your account.",
-  "login": "Click the Login button to access your account."
-};
-
-function sendMessage() {
-  const inputField = document.getElementById("user-input");
-  const message = inputField.value.trim().toLowerCase();
-  if (!message) return;
-  appendMessage(inputField.value, "user");
-  inputField.value = "";
-
-  let reply = "🤖 Sorry, I didn’t understand that. Try asking about traceability, rewards, or registration.";
-  for (let key in faq) { if (message.includes(key)) { reply = faq[key]; break; } }
-  setTimeout(() => appendMessage(reply, "bot"), 500);
+function initParticles(){
+  particlesArray = [];
+  for(let i=0;i<100;i++){particlesArray.push(new Particle());}
 }
-
-function appendMessage(text, sender) {
-  const chatBox = document.getElementById("chat-box");
-  const msgDiv = document.createElement("div");
-  msgDiv.classList.add("message", sender === "user" ? "user-message" : "bot-message");
-  msgDiv.innerText = text;
-  chatBox.appendChild(msgDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
+function connectParticles(){
+  for(let a=0;a<particlesArray.length;a++){
+    for(let b=a;b<particlesArray.length;b++){
+      let dx=particlesArray[a].x - particlesArray[b].x;
+      let dy=particlesArray[a].y - particlesArray[b].y;
+      let distance=Math.sqrt(dx*dx + dy*dy);
+      if(distance<maxDistance){
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(0,255,255,'+(1-distance/maxDistance)*0.2+')';
+        ctx.lineWidth=1;
+        ctx.moveTo(particlesArray[a].x,particlesArray[a].y);
+        ctx.lineTo(particlesArray[b].x,particlesArray[b].y);
+        ctx.stroke();
+      }
+    }
+  }
 }
-
-document.getElementById("user-input").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") sendMessage();
-});
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particlesArray.forEach(p=>{p.update();p.draw();});
+  connectParticles();
+  requestAnimationFrame(animate);
+}
+window.addEventListener('resize',function(){canvas.width=window.innerWidth;canvas.height=window.innerHeight; initParticles();});
+initParticles();
+animate();
 </script>
 
 </body>
