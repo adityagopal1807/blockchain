@@ -1,104 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AyurChain AI | Smart Herb Blockchain</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    /* ---------- GENERAL ---------- */
-    html { scroll-behavior: smooth; }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { background: #0f0f1a; color: #fff; line-height: 1.6; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AyurChain AI | Smart Herb Blockchain</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  html { scroll-behavior: smooth; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { background: #0f0f1a; color: #fff; line-height: 1.6; overflow-x: hidden; }
 
-    a { text-decoration: none; }
+  a { text-decoration: none; }
 
-    /* ---------- NAVBAR ---------- */
-    nav {
-      position: fixed; width: 100%; top: 0; left: 0; z-index: 1000;
-      background: rgba(10,10,30,0.85); backdrop-filter: blur(8px);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    nav .logo { color: #0ff; font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; }
-    nav ul { list-style: none; display: flex; gap: 1.5rem; }
-    nav ul li a { color: #fff; font-weight: 500; transition: 0.3s; }
-    nav ul li a:hover, nav ul li a.active { color: #0ff; }
+  /* ---------- NAVBAR ---------- */
+  nav {
+    position: fixed; width: 100%; top: 0; left: 0; z-index: 1000;
+    background: rgba(10,10,30,0.85); backdrop-filter: blur(8px);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  nav .logo { color: #0ff; font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; }
+  nav ul { list-style: none; display: flex; gap: 1.5rem; }
+  nav ul li a { color: #fff; font-weight: 500; transition: 0.3s; }
+  nav ul li a:hover, nav ul li a.active { color: #0ff; }
+  .menu-toggle { display: none; font-size: 1.8rem; color: #0ff; cursor: pointer; }
+  @media (max-width:768px){nav ul{display:none;flex-direction:column;background:rgba(10,10,30,0.95);position:absolute;top:60px;right:0;width:200px;padding:1rem;border-radius:8px}nav ul.show{display:flex}.menu-toggle{display:block}}
 
-    .menu-toggle { display: none; font-size: 1.8rem; color: #0ff; cursor: pointer; }
+  /* ---------- HERO ---------- */
+  .hero { position: relative; text-align: center; padding: 180px 20px 120px; overflow: hidden; background: #0f0f1a; }
+  .hero h1 { font-size: 3rem; font-weight: 800; letter-spacing: 1px; color: #0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+  .hero h3 { font-size: 1.5rem; margin-top: 10px; font-weight: 400; color: #fff; }
+  .hero p { font-size: 1.1rem; margin: 20px auto; max-width: 700px; color: #ccc; }
+  .btn { background: linear-gradient(90deg,#0ff,#f0f); color: #000; padding: 12px 28px; font-weight: bold; border-radius: 10px; margin: 10px; transition:0.3s; cursor:pointer; }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,255,255,0.5); }
 
-    @media (max-width: 768px) {
-      nav ul { display: none; flex-direction: column; background: rgba(10,10,30,0.95); position: absolute; top: 60px; right: 0; width: 200px; padding: 1rem; border-radius: 8px; }
-      nav ul.show { display: flex; }
-      .menu-toggle { display: block; }
-    }
+  /* ---------- PARTICLES / GLOW ---------- */
+  #particles { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .particle { position:absolute; border-radius:50%; background:#0ff; opacity:0.6; animation: float 10s linear infinite; }
+  @keyframes float { 0%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-100px) rotate(180deg);} 100%{transform:translateY(0) rotate(360deg);} }
 
-    /* ---------- HERO ---------- */
-    .hero {
-      background: linear-gradient(135deg, rgba(0,255,255,0.3), rgba(255,0,255,0.3)), url('https://images.unsplash.com/photo-1611162617217-9b136db8ce29?auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
-      text-align: center; padding: 160px 20px 120px; position: relative; overflow: hidden;
-    }
-    .hero h1 { font-size: 3rem; font-weight: 800; letter-spacing: 1px; color: #0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
-    .hero h3 { font-size: 1.5rem; margin-top: 10px; font-weight: 400; color: #fff; }
-    .hero p { font-size: 1.1rem; margin: 20px auto; max-width: 700px; color: #ccc; }
-    .btn {
-      background: linear-gradient(90deg, #0ff, #f0f);
-      color: #000; padding: 12px 28px; font-weight: bold; border-radius: 10px; margin: 10px;
-      transition: 0.3s; cursor: pointer;
-    }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,255,255,0.5); }
+  /* ---------- SECTIONS ---------- */
+  .section { padding: 80px 20px; text-align: center; }
+  .section:nth-child(even){background:#0a0a1a;}
+  .section h2{font-size:2.5rem;margin-bottom:20px;color:#0ff;}
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:30px;}
+  .card{background:rgba(10,10,30,0.8);border-radius:16px;box-shadow:0 0 20px rgba(0,255,255,0.3);padding:25px;transition:0.5s;opacity:0;transform:translateY(20px);}
+  .card.show{opacity:1;transform:translateY(0);}
+  .card i{font-size:3rem;color:#0ff;margin-bottom:10px;}
+  .card:hover{box-shadow:0 0 30px #0ff,0 0 60px #f0f; transform: translateY(-5px);}
 
-    /* ---------- SECTIONS ---------- */
-    .section { padding: 80px 20px; text-align: center; }
-    .section:nth-child(even) { background: #0a0a1a; }
-    .section h2 { font-size: 2.5rem; margin-bottom: 20px; color: #0ff; }
+  /* ---------- FOOTER ---------- */
+  .footer{background:#05050f;color:#888;text-align:center;padding:20px 10px;margin-top:60px;}
 
-    .features {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;
-    }
-    .card {
-      background: rgba(10,10,30,0.8); border-radius: 16px; box-shadow: 0 0 20px rgba(0,255,255,0.3);
-      padding: 25px; transition: 0.5s; opacity: 0; transform: translateY(20px);
-    }
-    .card.show { opacity: 1; transform: translateY(0); }
-    .card i { font-size: 3rem; color: #0ff; margin-bottom: 10px; }
+  /* ---------- SCROLL TO TOP ---------- */
+  .top-button{position:fixed;bottom:30px;right:30px;background:#0ff;color:#000;padding:12px;border-radius:50%;font-size:18px;display:none;cursor:pointer;}
+  .top-button.show{display:inline-block;}
 
-    /* ---------- FOOTER ---------- */
-    .footer { background: #05050f; color: #888; text-align: center; padding: 20px 10px; margin-top: 60px; }
-
-    /* ---------- SCROLL TO TOP ---------- */
-    .top-button {
-      position: fixed; bottom: 30px; right: 30px; background: #0ff; color: #000;
-      padding: 12px; border-radius: 50%; font-size: 18px; display: none; cursor: pointer;
-    }
-    .top-button.show { display: inline-block; }
-
-    /* ---------- CHAT ---------- */
-    .chat-btn {
-      position: fixed; bottom: 90px; right: 30px; background: #0ff; color: #000;
-      padding: 16px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,255,255,0.3);
-    }
-    .chat-box {
-      position: fixed; bottom: 160px; right: 30px; width: 350px; height: 450px;
-      background: #111; border-radius: 12px; display: none; flex-direction: column; z-index: 1000;
-      box-shadow: 0 0 20px #0ff;
-    }
-    .chat-header {
-      background: #0ff; color: #000; padding: 12px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;
-    }
-    .chat-messages { flex: 1; padding: 10px; overflow-y: auto; color: #fff; font-size: 0.9rem; }
-    .chat-input { display: flex; padding: 10px; border-top: 1px solid #0ff; }
-    .chat-input input { flex: 1; padding: 8px; border-radius: 6px; border: none; outline: none; }
-    .chat-input button { margin-left: 8px; padding: 8px 12px; background: #0ff; border: none; cursor: pointer; border-radius: 6px; }
-
-    .message { margin: 6px 0; }
-    .user { text-align: right; color: #0ff; }
-    .bot { text-align: left; color: #fff; }
-  </style>
+  /* ---------- CHAT ---------- */
+  .chat-btn{position:fixed;bottom:90px;right:30px;background:#0ff;color:#000;padding:16px;border-radius:50%;font-size:20px;cursor:pointer;z-index:1000;box-shadow:0 4px 12px rgba(0,255,255,0.3);}
+  .chat-box{position:fixed;bottom:160px;right:30px;width:350px;height:450px;background:#111;border-radius:12px;display:none;flex-direction:column;z-index:1000;box-shadow:0 0 20px #0ff;}
+  .chat-header{background:#0ff;color:#000;padding:12px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;}
+  .chat-messages{flex:1;padding:10px;overflow-y:auto;color:#fff;font-size:0.9rem;}
+  .chat-input{display:flex;padding:10px;border-top:1px solid #0ff;}
+  .chat-input input{flex:1;padding:8px;border-radius:6px;border:none;outline:none;}
+  .chat-input button{margin-left:8px;padding:8px 12px;background:#0ff;border:none;cursor:pointer;border-radius:6px;}
+  .message{margin:6px 0;}
+  .user{text-align:right;color:#0ff;}
+  .bot{text-align:left;color:#fff;}
+</style>
 </head>
 <body>
-
   <nav>
     <div class="logo">AyurChain AI</div>
     <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
@@ -111,6 +82,7 @@
   </nav>
 
   <header class="hero" id="home">
+    <canvas id="particles"></canvas>
     <h1>AI + Blockchain for Herbal Traceability</h1>
     <h3>Smart, Transparent, Sustainable</h3>
     <p>Track every herb from farm to pharmacy using AI-powered blockchain, ensuring authenticity and quality.</p>
@@ -144,7 +116,7 @@
     <p>Organization: Ministry of Ayush | AIIA</p>
   </section>
 
-  <footer class="footer"><p>&copy; 2025 AyurChain AI. All rights reserved.</p></footer>
+  <footer class="footer">&copy; 2025 AyurChain AI. All rights reserved.</footer>
 
   <a href="#" class="top-button"><i class="fas fa-arrow-up"></i></a>
 
@@ -164,40 +136,59 @@
     </div>
   </div>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("menu").classList.toggle("show");
-    }
+<script>
+  // ---------- MENU ----------
+  function toggleMenu(){document.getElementById("menu").classList.toggle("show");}
 
-    // Scroll to top
-    const topButton = document.querySelector('.top-button');
-    window.addEventListener('scroll', () => topButton.classList.toggle('show', window.scrollY > 400));
+  // ---------- SCROLL TO TOP ----------
+  const topButton=document.querySelector('.top-button');
+  window.addEventListener('scroll',()=>topButton.classList.toggle('show',window.scrollY>400));
 
-    // Card animation
-    const cards = document.querySelectorAll('.card');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => entry.target.classList.toggle('show', entry.isIntersecting));
-    }, { threshold: 0.4 });
-    cards.forEach(card => observer.observe(card));
+  // ---------- CARD ANIMATION ----------
+  const cards=document.querySelectorAll('.card');
+  const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>entry.target.classList.toggle('show',entry.isIntersecting));},{threshold:0.4});
+  cards.forEach(card=>observer.observe(card));
 
-    // Chat
-    function toggleChat() {
-      const chat = document.getElementById("chatBox");
-      chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+  // ---------- CHAT ----------
+  function toggleChat(){const chat=document.getElementById("chatBox"); chat.style.display=chat.style.display==='flex'?'none':'flex';}
+  function sendMessage(){
+    const input=document.getElementById("userInput");
+    const msg=input.value.trim();
+    if(!msg)return;
+    const messages=document.getElementById("chatMessages");
+    messages.innerHTML+=`<div class="message user">${msg}</div>`;
+    input.value="";
+    setTimeout(()=>{messages.innerHTML+=`<div class="message bot">🤖 AI Assistant: Our system is blockchain-secure & AI-verified!</div>`;messages.scrollTop=messages.scrollHeight;},800);
+    messages.scrollTop=messages.scrollHeight;
+  }
+
+  // ---------- PARTICLES ----------
+  const canvas=document.getElementById('particles');
+  const ctx=canvas.getContext('2d');
+  let particlesArray=[];
+  function initParticles(){
+    canvas.width=window.innerWidth;
+    canvas.height=document.querySelector('.hero').offsetHeight;
+    particlesArray=[];
+    for(let i=0;i<60;i++){
+      particlesArray.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*3+1, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5});
     }
-    function sendMessage() {
-      const input = document.getElementById("userInput");
-      const msg = input.value.trim();
-      if(!msg) return;
-      const messages = document.getElementById("chatMessages");
-      messages.innerHTML += `<div class="message user">${msg}</div>`;
-      input.value = "";
-      setTimeout(() => {
-        messages.innerHTML += `<div class="message bot">🤖 Thanks! Our AI team will respond shortly.</div>`;
-        messages.scrollTop = messages.scrollHeight;
-      }, 800);
-      messages.scrollTop = messages.scrollHeight;
-    }
-  </script>
+  }
+  function animateParticles(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particlesArray.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle="#0ff"; ctx.fill();
+      p.x+=p.dx; p.y+=p.dy;
+      if(p.x<0||p.x>canvas.width)p.dx*=-1;
+      if(p.y<0||p.y>canvas.height)p.dy*=-1;
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  initParticles();
+  animateParticles();
+  window.addEventListener('resize',initParticles);
+</script>
 </body>
 </html>
